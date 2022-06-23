@@ -2,7 +2,7 @@ import './App.css';
 import React, { Component }  from 'react';
 import {useState} from "react";
 import Axios from 'axios';
-
+import $ from 'jquery';
 
 function App() {
   const [itemName, setItemName] = useState("");
@@ -22,6 +22,24 @@ function App() {
       console.log("Successfully passed to backend!")
     })
   };
+
+  const displayItems = () => {
+    Axios.get("http://localhost:3001/items").then((response) => {
+      console.log(response);
+      let res = '';
+      response.data.forEach(data => {
+        res += 
+        `<tr>
+          <td>${data.id}</td>
+          <td>${data.itemName}</td>
+          <td>${data.storageLocation}</td>
+          <td>${data.dateStored}</td>
+          <td>${data.date}</td>
+        </tr>`
+      });
+      $('#place-here').html(res);
+    });
+  };
   return (
     <div className="App">
       <h1>Inventory Database</h1>
@@ -32,13 +50,24 @@ function App() {
             <label>Storage Location:</label>
           </div>
           <div className='inputs'>
-            <input ID="nameInput" type="text" onChange={(event) =>{setItemName(event.target.value)}}/>
+            <input id="nameInput" type="text" onChange={(event) =>{setItemName(event.target.value)}}/>
             
-            <input ID="locationInput"type="text" onChange={(event) =>{setStorageLocation(event.target.value)}}/>
+            <input id="locationInput"type="text" onChange={(event) =>{setStorageLocation(event.target.value)}}/>
           </div>
           <button onClick={addItem}>Add Item</button>
+          <button onClick={displayItems}>View Database</button>
         </div>
-      </div>       
+        <table>
+          <thead>
+            <th>ID</th>
+            <th>Item Name</th>
+            <th>Storage Location</th>
+            <th>Date Stored</th>
+            <th>Date Removed</th>
+          </thead>
+          <tbody id="place-here"></tbody>
+        </table> 
+      </div> 
     </div>
   );
 }

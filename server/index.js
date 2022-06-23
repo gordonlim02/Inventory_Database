@@ -23,7 +23,7 @@ app.post('/create', (req, res) => {
     connection.query(
         "INSERT INTO inventory (itemName, storageLocation, dateStored, dateRemoved) VALUES (?, ?, ?, ?)",
         [itemName, storageLocation, dateStored, dateRemoved], 
-        (err, result) => {
+        (err, res) => {
             if (err) {
                 console.log(err)
             } else {
@@ -32,6 +32,16 @@ app.post('/create', (req, res) => {
         }
     )
 })
+
+app.get("/items", (req, res) => {
+    connection.query("SELECT * FROM inventory", (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    });
+});
 
 app.listen(3001, ()=> {
     console.log("Running!");
